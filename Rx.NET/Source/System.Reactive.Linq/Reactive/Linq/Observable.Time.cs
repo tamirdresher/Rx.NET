@@ -1,4 +1,6 @@
-﻿// Copyright (c) Microsoft Open Technologies, Inc. All rights reserved. See License.txt in the project root for license information.
+﻿// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the Apache 2.0 License.
+// See the LICENSE file in the project root for more information. 
 
 using System.Collections.Generic;
 using System.Reactive.Concurrency;
@@ -718,7 +720,7 @@ namespace System.Reactive.Linq
         }
 
         /// <summary>
-        /// Samples the source observable sequence using a samper observable sequence producing sampling ticks.
+        /// Samples the source observable sequence using a sampler observable sequence producing sampling ticks.
         /// Upon each sampling tick, the latest element (if any) in the source sequence during the last sampling interval is sent to the resulting sequence.
         /// </summary>
         /// <typeparam name="TSource">The type of the elements in the source sequence.</typeparam>

@@ -1,4 +1,6 @@
-﻿// Copyright (c) Microsoft Open Technologies, Inc. All rights reserved. See License.txt in the project root for license information.
+﻿// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the Apache 2.0 License.
+// See the LICENSE file in the project root for more information. 
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -33,7 +35,7 @@ namespace System.Threading.Tasks
         public static void Handle<T, R>(this Task<T> task, TaskCompletionSource<R> tcs, Action<T> success)
         {
             if (task.IsFaulted)
-                tcs.TrySetException(task.Exception);
+                tcs.TrySetException(task.Exception.InnerExceptions);
             else if (task.IsCanceled)
                 tcs.TrySetCanceled();
             else if (task.IsCompleted)
@@ -60,22 +62,6 @@ namespace System.Threading.Tasks
                 success(task.Result);
         }
 
-        public static Task<bool> UsingEnumerator(this Task<bool> task, IDisposable disposable)
-        {
-            task.ContinueWith(t =>
-            {
-                if (t.IsFaulted)
-                {
-                    var ignored = t.Exception; // don't remove!
-                }
-
-                if (t.IsFaulted || t.IsCanceled || !t.Result)
-                    disposable.Dispose();
-            }, TaskContinuationOptions.ExecuteSynchronously);
-
-            return task;
-        }
-
         public static Task Then<T>(this Task<T> task, Action<Task<T>> continuation)
         {
             //
@@ -96,19 +82,13 @@ namespace System.Threading.Tasks
             return task.ContinueWith(continuation);
         }
 
-        public static Task<bool> UsingEnumeratorSync(this Task<bool> task, IDisposable disposable)
+        public static Task<bool> UsingEnumerator(this Task<bool> task, IDisposable disposable)
         {
-            var tcs = new TaskCompletionSource<bool>();
-
-            task.ContinueWith(t =>
+            return task.Finally(() =>
             {
-                if (t.IsFaulted || t.IsCanceled || !t.Result)
-                    disposable.Dispose(); // TODO: Check whether we need exception handling here!
-
-                t.Handle(tcs, res => tcs.TrySetResult(res));
-            }, TaskContinuationOptions.ExecuteSynchronously);
-
-            return tcs.Task;
+                if (task.IsFaulted || task.IsCanceled || !task.Result)
+                    disposable.Dispose();
+            });
         }
 
         public static Task<R> Finally<R>(this Task<R> task, Action action)

@@ -1,23 +1,22 @@
-﻿// Copyright (c) Microsoft Open Technologies, Inc. All rights reserved. See License.txt in the project root for license information.
+﻿// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the Apache 2.0 License.
+// See the LICENSE file in the project root for more information. 
 #if !NO_TPL
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Xunit;
 using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Diagnostics;
-//using System.Reactive.Linq;
-//using System.Reactive.Concurrency;
 
 namespace Tests
 {
     public partial class AsyncTests
     {
-        [TestInitialize]
-        public void InitTests()
+        public AsyncTests()
         {
             TaskScheduler.UnobservedTaskException += (o, e) =>
             {
@@ -25,7 +24,7 @@ namespace Tests
         }
 
         /*
-        [TestMethod]
+        [Fact]
         public void TestPushPopAsync()
         {
             var stack = new Stack<int>();
@@ -44,7 +43,7 @@ namespace Tests
             // we give it a timeout so the test can fail instead of hang
             task.Wait(TimeSpan.FromSeconds(2));
 
-            Assert.AreEqual(10, stack.Count);
+            Assert.Equal(10, stack.Count);
         }
 
         private Task DoSomethingAsync(IObservable<int> observable, Stack<int> stack)
@@ -79,7 +78,7 @@ namespace Tests
             return tcs.Task;
         }
         */
-
+#if !NO_THREAD
         static IEnumerable<int> Xs(Action a)
         {
             try
@@ -97,8 +96,9 @@ namespace Tests
                 a();
             }
         }
+#endif
 
-        [TestMethod]
+        [Fact]
         public void CorrectDispose()
         {
             var disposed = new TaskCompletionSource<bool>();
@@ -113,13 +113,13 @@ namespace Tests
             var e = ys.GetEnumerator();
             e.Dispose();
 
-            Assert.IsTrue(disposed.Task.Result);
+            Assert.True(disposed.Task.Result);
 
-            Assert.IsFalse(e.MoveNext().Result);
+            Assert.False(e.MoveNext().Result);
         }
 
-        [TestMethod]
-        public void DisposesUponError()
+        [Fact]
+        public async Task DisposesUponError()
         {
             var disposed = new TaskCompletionSource<bool>();
 
@@ -132,12 +132,12 @@ namespace Tests
             var ys = xs.Select(x => { if (x == 1) throw ex; return x; });
 
             var e = ys.GetEnumerator();
-            AssertThrows<Exception>(() => e.MoveNext().Wait());
+            await Assert.ThrowsAsync<Exception>(() => e.MoveNext());
 
-            Assert.IsTrue(disposed.Task.Result);
+            Assert.True(disposed.Task.Result);
         }
 
-        [TestMethod]
+        [Fact]
         public void CorrectCancel()
         {
             var disposed = new TaskCompletionSource<bool>();
@@ -171,13 +171,13 @@ namespace Tests
                 // it. This design is chosen because cancelling a MoveNext call leaves
                 // the enumerator in an indeterminate state. Further interactions with
                 // it should be forbidden.
-                Assert.IsTrue(disposed.Task.Result);
+                Assert.True(disposed.Task.Result);
             }
 
-            Assert.IsFalse(e.MoveNext().Result);
+            Assert.False(e.MoveNext().Result);
         }
 
-        [TestMethod]
+        [Fact]
         public void CanCancelMoveNext()
         {
             var evt = new ManualResetEvent(false);
@@ -192,11 +192,11 @@ namespace Tests
             try
             {
                 t.Wait();
-                Assert.Fail();
+                Assert.True(false);
             }
             catch
             {
-                Assert.IsTrue(t.IsCanceled);
+                Assert.True(t.IsCanceled);
             }
 
             evt.Set();
@@ -208,7 +208,7 @@ namespace Tests
             yield return 42;
         }
 
-        [TestMethod]
+        [Fact]
         public void TakeOneFromSelectMany()
         {
             var enumerable = AsyncEnumerable
@@ -217,29 +217,29 @@ namespace Tests
                 .Take(1)
                 .Do(_ => { });
 
-            Assert.AreEqual("Check", enumerable.First().Result);
+            Assert.Equal("Check", enumerable.First().Result);
         }
 
-        [TestMethod]
+        [Fact]
         public void SelectManyDisposeInvokedOnlyOnce()
         {
             var disposeCounter = new DisposeCounter();
 
             var result = AsyncEnumerable.Return(1).SelectMany(i => disposeCounter).Select(i => i).ToList().Result;
 
-            Assert.AreEqual(0, result.Count);
-            Assert.AreEqual(1, disposeCounter.DisposeCount);
+            Assert.Equal(0, result.Count);
+            Assert.Equal(1, disposeCounter.DisposeCount);
         }
 
-        [TestMethod]
+        [Fact]
         public void SelectManyInnerDispose()
         {
             var disposes = Enumerable.Range(0, 10).Select(_ => new DisposeCounter()).ToList();
 
             var result = AsyncEnumerable.Range(0, 10).SelectMany(i => disposes[i]).Select(i => i).ToList().Result;
 
-            Assert.AreEqual(0, result.Count);
-            Assert.IsTrue(disposes.All(d => d.DisposeCount == 1));
+            Assert.Equal(0, result.Count);
+            Assert.True(disposes.All(d => d.DisposeCount == 1));
         }
 
         private class DisposeCounter : IAsyncEnumerable<object>
@@ -267,10 +267,10 @@ namespace Tests
 
                 public Task<bool> MoveNext(CancellationToken _)
                 {
-                    return Task.FromResult(false);
+                    return Task.Factory.StartNew(() => false);
                 }
 
-                public object Current { get; }
+                public object Current { get; private set; }
             }
         }
     }

@@ -1,0 +1,38 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+  <metadata>
+    <id>System.Interactive</id>
+    <version>$version$</version>
+    <authors>.NET Foundation and Contributors</authors>
+    <owners>Microsoft,RxTeam</owners>
+    <licenseUrl>http://go.microsoft.com/fwlink/?LinkID=261272</licenseUrl>
+    <projectUrl>http://go.microsoft.com/fwlink/?LinkId=261273</projectUrl>
+    <iconUrl>http://go.microsoft.com/fwlink/?LinkId=261274</iconUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Interactive Extensions Main Library used to express queries over enumerable sequences.</description>
+    <copyright>Copyright (c) .NET Foundation and Contributors. All Rights Reserved</copyright>
+    <language>en-US</language>
+    <tags>Ix Interactive Extensions Enumerable</tags>
+    <frameworkAssemblies>
+      <frameworkAssembly assemblyName="System" targetFramework="net45" />
+      <frameworkAssembly assemblyName="System.Core" targetFramework="net45" />
+    </frameworkAssemblies>
+    <dependencies>
+      <group targetFramework="netstandard1.0">
+        <dependency id="System.Collections" version="4.0.11" />
+        <dependency id="System.Diagnostics.Debug" version="4.0.11" />
+        <dependency id="System.Linq" version="4.1.0" />
+        <dependency id="System.Resources.ResourceManager" version="4.0.1" />
+        <dependency id="System.Runtime" version="4.1.0" />
+        <dependency id="System.Runtime.Extensions" version="4.1.0" />
+        <dependency id="System.Threading" version="4.0.11" />
+        <dependency id="System.Threading.Tasks" version="4.0.11" />
+      </group>
+      <group targetFramework="net45" />
+      <group targetFramework="portable-net45+win8+wp8+wpa81" />
+    </dependencies>
+  </metadata>
+  <files>
+    <file src="..\System.Interactive\bin\$configuration$\**\System.Interactive.*" exclude="**\*.deps.json" target="lib" />
+  </files>
+</package>

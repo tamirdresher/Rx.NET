@@ -1,0 +1,60 @@
+﻿{
+  "version": "3.0.0-*",
+  "title": "Interactive Extensions - Tests",
+  "description": "Interactive Extensions test project.",
+  "authors": ["Microsoft"],
+  "copyright": "Copyright (C) Microsoft Corporation",
+  
+  "packOptions": {
+    "tags": [],
+    "iconUrl": "http://go.microsoft.com/fwlink/?LinkId=261274",
+    "projectUrl": "https://github.com/Reactive-Extensions/Rx.NET",
+    "licenseUrl": "https://raw.githubusercontent.com/Reactive-Extensions/Rx.NET/master/Ix.NET/Source/license.txt",
+    "requireLicenseAcceptance": true
+  },
+
+  "buildOptions": {
+    "nowarn": [ "CS0618" ],
+    "keyFile": "../ReactiveX.snk",
+    "define": [ "SIGNED" ],
+    "copyToOutput": {
+      "include": [ "xunit.runner.json" ]
+    },
+    "exclude": [
+      "App.cs"
+    ]
+  },
+  
+  "dependencies": {
+    "System.Interactive.Providers": { "target": "project" },
+    "System.Interactive.Async.Providers": { "target": "project" },
+    "xunit": "2.1.0",
+    "dotnet-test-xunit": "1.0.0-rc2-*"
+  },
+
+  "testRunner": "xunit",
+  
+  "frameworks": {
+    "netcoreapp1.0": {
+      "imports": [ "dotnet", "dnxcore50", "portable-net45+win8" ],
+      "buildOptions": {
+        "define": [
+          "HAS_AWAIT"
+        ]
+      },
+      "dependencies": {
+        "Microsoft.NETCore.App": {
+            "version": "1.0.0",
+            "type": "platform"
+        }
+      }
+    },
+    "net461": {
+      "buildOptions": {
+        "define": [
+          "HAS_AWAIT"
+        ]
+      }
+    }
+  }
+}

@@ -1,4 +1,6 @@
-﻿// Copyright (c) Microsoft Open Technologies, Inc. All rights reserved. See License.txt in the project root for license information.
+﻿// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the Apache 2.0 License.
+// See the LICENSE file in the project root for more information. 
 
 using System;
 using System.Diagnostics;
@@ -259,7 +261,15 @@ namespace System.Reactive.Concurrency
             //       events through IHostLifecycleNotifications, discovered through the PEP in order
             //       to maintain portability of the core of Rx.
             //
+
             var periodic = scheduler.AsPeriodic();
+#if WINDOWS
+            // Workaround for WinRT not supporting <1ms resolution
+            if(period < TimeSpan.FromMilliseconds(1))
+            {
+                periodic = null; // skip the periodic scheduler and use the stopwatch
+            }
+#endif
             if (periodic != null)
             {
                 return periodic.SchedulePeriodic(state, period, action);

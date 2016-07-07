@@ -1,25 +1,27 @@
-﻿// Copyright (c) Microsoft Open Technologies, Inc. All rights reserved. See License.txt in the project root for license information.
+﻿// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the Apache 2.0 License.
+// See the LICENSE file in the project root for more information. 
 #if !NO_TPL
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Xunit;
 using System.Threading;
 
 namespace Tests
 {
     public partial class AsyncTests
     {
-        [TestMethod]
+        [Fact]
         public void ToAsyncEnumerable_Null()
         {
             AssertThrows<ArgumentNullException>(() => AsyncEnumerable.ToAsyncEnumerable<int>(default(IEnumerable<int>)));
             AssertThrows<ArgumentNullException>(() => AsyncEnumerable.ToAsyncEnumerable<int>(default(IObservable<int>)));
         }
 
-        [TestMethod]
+        [Fact]
         public void ToAsyncEnumerable1()
         {
             var xs = new[] { 1, 2, 3, 4 }.ToAsyncEnumerable();
@@ -31,7 +33,7 @@ namespace Tests
             NoNext(e);
         }
 
-        [TestMethod]
+        [Fact]
         public void ToAsyncEnumerable2()
         {
             var ex = new Exception("Bang");
@@ -47,7 +49,7 @@ namespace Tests
             throw e;
         }
 
-        [TestMethod]
+        [Fact]
         public void ToAsyncEnumerable3()
         {
             var subscribed = false;
@@ -62,17 +64,17 @@ namespace Tests
                 return new MyDisposable(() => { });
             }).ToAsyncEnumerable();
 
-            Assert.IsFalse(subscribed);
+            Assert.False(subscribed);
 
             var e = xs.GetEnumerator();
 
-            Assert.IsTrue(subscribed);
+            Assert.True(subscribed);
 
             HasNext(e, 42);
             NoNext(e);
         }
 
-        [TestMethod]
+        [Fact]
         public void ToAsyncEnumerable4()
         {
             var ex = new Exception("Bang!");
@@ -87,16 +89,16 @@ namespace Tests
                 return new MyDisposable(() => { });
             }).ToAsyncEnumerable();
 
-            Assert.IsFalse(subscribed);
+            Assert.False(subscribed);
 
             var e = xs.GetEnumerator();
 
-            Assert.IsTrue(subscribed);
+            Assert.True(subscribed);
 
             AssertThrows<Exception>(() => e.MoveNext().Wait(), ex_ => ((AggregateException)ex_).InnerExceptions.Single() == ex);
         }
 
-        [TestMethod]
+        [Fact]
         public void ToAsyncEnumerable_With_Completed_Task()
         {
             var task = Task.Factory.StartNew(() => 36);
@@ -104,12 +106,12 @@ namespace Tests
             var xs = task.ToAsyncEnumerable();
             var e = xs.GetEnumerator();
 
-            Assert.IsTrue(e.MoveNext().Result);
-            Assert.AreEqual(36, e.Current);
-            Assert.IsFalse(e.MoveNext().Result);
+            Assert.True(e.MoveNext().Result);
+            Assert.Equal(36, e.Current);
+            Assert.False(e.MoveNext().Result);
         }
 
-        [TestMethod]
+        [Fact]
         public void ToAsyncEnumerable_With_Faulted_Task()
         {
             var ex = new InvalidOperationException();
@@ -122,7 +124,7 @@ namespace Tests
             AssertThrows<Exception>(() => e.MoveNext().Wait(), ex_ => ((AggregateException)ex_).InnerExceptions.Single() == ex);
         }
 
-        [TestMethod]
+        [Fact]
         public void ToAsyncEnumerable_With_Canceled_Task()
         {
             var tcs = new TaskCompletionSource<int>();
@@ -164,27 +166,27 @@ namespace Tests
             }
         }
 
-        [TestMethod]
+        [Fact]
         public void ToEnumerable_Null()
         {
             AssertThrows<ArgumentNullException>(() => AsyncEnumerable.ToEnumerable<int>(null));
         }
 
-        [TestMethod]
+        [Fact]
         public void ToEnumerable1()
         {
             var xs = AsyncEnumerable.Return(42).ToEnumerable();
-            Assert.IsTrue(xs.SequenceEqual(new[] { 42 }));
+            Assert.True(xs.SequenceEqual(new[] { 42 }));
         }
 
-        [TestMethod]
+        [Fact]
         public void ToEnumerable2()
         {
             var xs = AsyncEnumerable.Empty<int>().ToEnumerable();
-            Assert.IsTrue(xs.SequenceEqual(new int[0]));
+            Assert.True(xs.SequenceEqual(new int[0]));
         }
 
-        [TestMethod]
+        [Fact]
         public void ToEnumerable3()
         {
             var ex = new Exception("Bang");
@@ -193,13 +195,13 @@ namespace Tests
         }
 
 #if !NO_RXINTERFACES
-        [TestMethod]
+        [Fact]
         public void ToObservable_Null()
         {
             AssertThrows<ArgumentNullException>(() => AsyncEnumerable.ToObservable<int>(null));
         }
 
-        [TestMethod]
+        [Fact]
         public void ToObservable1()
         {
             var fail = false;
@@ -223,10 +225,10 @@ namespace Tests
             ));
 
             evt.WaitOne();
-            Assert.IsFalse(fail);
+            Assert.False(fail);
         }
 
-        [TestMethod]
+        [Fact]
         public void ToObservable2()
         {
             var lst = new List<int>();
@@ -251,11 +253,11 @@ namespace Tests
             ));
 
             evt.WaitOne();
-            Assert.IsFalse(fail);
-            Assert.IsTrue(lst.SequenceEqual(new[] { 42 }));
+            Assert.False(fail);
+            Assert.True(lst.SequenceEqual(new[] { 42 }));
         }
 
-        [TestMethod]
+        [Fact]
         public void ToObservable3()
         {
             var lst = new List<int>();
@@ -280,11 +282,11 @@ namespace Tests
             ));
 
             evt.WaitOne();
-            Assert.IsFalse(fail);
-            Assert.IsTrue(lst.SequenceEqual(Enumerable.Range(0, 10)));
+            Assert.False(fail);
+            Assert.True(lst.SequenceEqual(Enumerable.Range(0, 10)));
         }
 
-        [TestMethod]
+        [Fact]
         public void ToObservable4()
         {
             var ex1 = new Exception("Bang!");
@@ -311,8 +313,8 @@ namespace Tests
             ));
 
             evt.WaitOne();
-            Assert.IsFalse(fail);
-            Assert.AreEqual(ex1, ((AggregateException)ex_).InnerExceptions.Single());
+            Assert.False(fail);
+            Assert.Equal(ex1, ((AggregateException)ex_).InnerExceptions.Single());
         }
 
         class MyObserver<T> : IObserver<T>

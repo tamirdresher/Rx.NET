@@ -1,18 +1,20 @@
-﻿// Copyright (c) Microsoft Open Technologies, Inc. All rights reserved. See License.txt in the project root for license information.
+﻿// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the Apache 2.0 License.
+// See the LICENSE file in the project root for more information. 
 #if !NO_TPL
 
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Xunit;
 using System.Threading;
 
 namespace Tests
 {
     public partial class AsyncTests
     {
-        [TestMethod]
+        [Fact]
         public void Concat_Null()
         {
             AssertThrows<ArgumentNullException>(() => AsyncEnumerable.Concat<int>(null, AsyncEnumerable.Return(42)));
@@ -21,7 +23,7 @@ namespace Tests
             AssertThrows<ArgumentNullException>(() => AsyncEnumerable.Concat<int>(default(IEnumerable<IAsyncEnumerable<int>>)));
         }
 
-        [TestMethod]
+        [Fact]
         public void Concat1()
         {
             var ys = new[] { 1, 2, 3 }.ToAsyncEnumerable().Concat(new[] { 4, 5, 6 }.ToAsyncEnumerable());
@@ -36,7 +38,7 @@ namespace Tests
             NoNext(e);
         }
 
-        [TestMethod]
+        [Fact]
         public void Concat2()
         {
             var ex = new Exception("Bang");
@@ -49,7 +51,7 @@ namespace Tests
             AssertThrows<Exception>(() => e.MoveNext().Wait(), ex_ => ((AggregateException)ex_).Flatten().InnerExceptions.Single() == ex);
         }
 
-        [TestMethod]
+        [Fact]
         public void Concat3()
         {
             var ex = new Exception("Bang");
@@ -59,7 +61,7 @@ namespace Tests
             AssertThrows<Exception>(() => e.MoveNext().Wait(), ex_ => ((AggregateException)ex_).Flatten().InnerExceptions.Single() == ex);
         }
 
-        [TestMethod]
+        [Fact]
         public void Concat4()
         {
             var xs = new[] { 1, 2, 3 }.ToAsyncEnumerable();
@@ -80,7 +82,7 @@ namespace Tests
             NoNext(e);
         }
 
-        [TestMethod]
+        [Fact]
         public void Concat5()
         {
             var ex = new Exception("Bang");
@@ -99,7 +101,7 @@ namespace Tests
             AssertThrows<Exception>(() => e.MoveNext().Wait(), ex_ => ((AggregateException)ex_).Flatten().InnerExceptions.Single() == ex);
         }
 
-        [TestMethod]
+        [Fact]
         public void Concat6()
         {
             var res = AsyncEnumerable.Concat(ConcatXss());
@@ -120,7 +122,7 @@ namespace Tests
             throw new Exception("Bang!");
         }
 
-        [TestMethod]
+        [Fact]
         public void Zip_Null()
         {
             AssertThrows<ArgumentNullException>(() => AsyncEnumerable.Zip<int, int, int>(null, AsyncEnumerable.Return(42), (x, y) => x + y));
@@ -128,7 +130,7 @@ namespace Tests
             AssertThrows<ArgumentNullException>(() => AsyncEnumerable.Zip<int, int, int>(AsyncEnumerable.Return(42), AsyncEnumerable.Return(42), null));
         }
 
-        [TestMethod]
+        [Fact]
         public void Zip1()
         {
             var xs = new[] { 1, 2, 3 }.ToAsyncEnumerable();
@@ -142,7 +144,7 @@ namespace Tests
             NoNext(e);
         }
 
-        [TestMethod]
+        [Fact]
         public void Zip2()
         {
             var xs = new[] { 1, 2, 3 }.ToAsyncEnumerable();
@@ -156,7 +158,7 @@ namespace Tests
             NoNext(e);
         }
 
-        [TestMethod]
+        [Fact]
         public void Zip3()
         {
             var xs = new[] { 1, 2, 3, 4 }.ToAsyncEnumerable();
@@ -170,7 +172,7 @@ namespace Tests
             NoNext(e);
         }
 
-        [TestMethod]
+        [Fact]
         public void Zip4()
         {
             var ex = new Exception("Bang!");
@@ -182,7 +184,7 @@ namespace Tests
             AssertThrows<Exception>(() => e.MoveNext().Wait(), ex_ => ((AggregateException)ex_).Flatten().InnerExceptions.Single() == ex);
         }
 
-        [TestMethod]
+        [Fact]
         public void Zip5()
         {
             var ex = new Exception("Bang!");
@@ -194,7 +196,7 @@ namespace Tests
             AssertThrows<Exception>(() => e.MoveNext().Wait(), ex_ => ((AggregateException)ex_).Flatten().InnerExceptions.Single() == ex);
         }
 
-        [TestMethod]
+        [Fact]
         public void Zip6()
         {
             var ex = new Exception("Bang!");
@@ -206,7 +208,7 @@ namespace Tests
             AssertThrows<Exception>(() => e.MoveNext().Wait(), ex_ => ((AggregateException)ex_).Flatten().InnerExceptions.Single() == ex);
         }
 
-        [TestMethod]
+        [Fact]
         public void Union_Null()
         {
             AssertThrows<ArgumentNullException>(() => AsyncEnumerable.Union<int>(null, AsyncEnumerable.Return(42)));
@@ -217,7 +219,7 @@ namespace Tests
             AssertThrows<ArgumentNullException>(() => AsyncEnumerable.Union<int>(AsyncEnumerable.Return(42), AsyncEnumerable.Return(42), null));
         }
 
-        [TestMethod]
+        [Fact]
         public void Union1()
         {
             var xs = new[] { 1, 2, 3 }.ToAsyncEnumerable();
@@ -233,7 +235,7 @@ namespace Tests
             NoNext(e);
         }
 
-        [TestMethod]
+        [Fact]
         public void Union2()
         {
             var xs = new[] { 1, 2, -3 }.ToAsyncEnumerable();
@@ -249,7 +251,7 @@ namespace Tests
             NoNext(e);
         }
 
-        [TestMethod]
+        [Fact]
         public void Intersect_Null()
         {
             AssertThrows<ArgumentNullException>(() => AsyncEnumerable.Intersect<int>(null, AsyncEnumerable.Return(42)));
@@ -260,7 +262,7 @@ namespace Tests
             AssertThrows<ArgumentNullException>(() => AsyncEnumerable.Intersect<int>(AsyncEnumerable.Return(42), AsyncEnumerable.Return(42), null));
         }
 
-        [TestMethod]
+        [Fact]
         public void Intersect1()
         {
             var xs = new[] { 1, 2, 3 }.ToAsyncEnumerable();
@@ -273,7 +275,7 @@ namespace Tests
             NoNext(e);
         }
 
-        [TestMethod]
+        [Fact]
         public void Intersect2()
         {
             var xs = new[] { 1, 2, -3 }.ToAsyncEnumerable();
@@ -286,7 +288,7 @@ namespace Tests
             NoNext(e);
         }
 
-        [TestMethod]
+        [Fact]
         public void Except_Null()
         {
             AssertThrows<ArgumentNullException>(() => AsyncEnumerable.Except<int>(null, AsyncEnumerable.Return(42)));
@@ -297,7 +299,7 @@ namespace Tests
             AssertThrows<ArgumentNullException>(() => AsyncEnumerable.Except<int>(AsyncEnumerable.Return(42), AsyncEnumerable.Return(42), null));
         }
 
-        [TestMethod]
+        [Fact]
         public void Except1()
         {
             var xs = new[] { 1, 2, 3 }.ToAsyncEnumerable();
@@ -309,7 +311,7 @@ namespace Tests
             NoNext(e);
         }
 
-        [TestMethod]
+        [Fact]
         public void Except2()
         {
             var xs = new[] { 1, 2, -3 }.ToAsyncEnumerable();
@@ -321,7 +323,7 @@ namespace Tests
             NoNext(e);
         }
 
-        [TestMethod]
+        [Fact]
         public void SequenceEqual_Null()
         {
             AssertThrows<ArgumentNullException>(() => AsyncEnumerable.SequenceEqual<int>(null, AsyncEnumerable.Return(42)));
@@ -339,50 +341,50 @@ namespace Tests
             AssertThrows<ArgumentNullException>(() => AsyncEnumerable.SequenceEqual<int>(AsyncEnumerable.Return(42), AsyncEnumerable.Return(42), null, CancellationToken.None));
         }
 
-        [TestMethod]
+        [Fact]
         public void SequenceEqual1()
         {
             var xs = new[] { 1, 2, 3 }.ToAsyncEnumerable();
             var res = xs.SequenceEqual(xs);
-            Assert.IsTrue(res.Result);
+            Assert.True(res.Result);
         }
 
-        [TestMethod]
+        [Fact]
         public void SequenceEqual2()
         {
             var xs = AsyncEnumerable.Empty<int>();
             var res = xs.SequenceEqual(xs);
-            Assert.IsTrue(res.Result);
+            Assert.True(res.Result);
         }
 
-        [TestMethod]
+        [Fact]
         public void SequenceEqual3()
         {
             var xs = new[] { 1, 2, 3 }.ToAsyncEnumerable();
             var ys = new[] { 1, 3, 2 }.ToAsyncEnumerable();
             var res = xs.SequenceEqual(ys);
-            Assert.IsFalse(res.Result);
+            Assert.False(res.Result);
         }
 
-        [TestMethod]
+        [Fact]
         public void SequenceEqual4()
         {
             var xs = new[] { 1, 2, 3, 4 }.ToAsyncEnumerable();
             var ys = new[] { 1, 2, 3 }.ToAsyncEnumerable();
             var res = xs.SequenceEqual(ys);
-            Assert.IsFalse(res.Result);
+            Assert.False(res.Result);
         }
 
-        [TestMethod]
+        [Fact]
         public void SequenceEqual5()
         {
             var xs = new[] { 1, 2, 3 }.ToAsyncEnumerable();
             var ys = new[] { 1, 2, 3, 4 }.ToAsyncEnumerable();
             var res = xs.SequenceEqual(ys);
-            Assert.IsFalse(res.Result);
+            Assert.False(res.Result);
         }
 
-        [TestMethod]
+        [Fact]
         public void SequenceEqual6()
         {
             var ex = new Exception("Bang!");
@@ -393,7 +395,7 @@ namespace Tests
             AssertThrows<Exception>(() => res.Wait(), ex_ => ((AggregateException)ex_).Flatten().InnerExceptions.Single() == ex);
         }
 
-        [TestMethod]
+        [Fact]
         public void SequenceEqual7()
         {
             var ex = new Exception("Bang!");
@@ -404,50 +406,50 @@ namespace Tests
             AssertThrows<Exception>(() => res.Wait(), ex_ => ((AggregateException)ex_).Flatten().InnerExceptions.Single() == ex);
         }
 
-        [TestMethod]
+        [Fact]
         public void SequenceEqual8()
         {
             var xs = new[] { 1, 2, 3 }.ToAsyncEnumerable();
             var res = xs.SequenceEqual(xs, new Eq());
-            Assert.IsTrue(res.Result);
+            Assert.True(res.Result);
         }
 
-        [TestMethod]
+        [Fact]
         public void SequenceEqual9()
         {
             var xs = AsyncEnumerable.Empty<int>();
             var res = xs.SequenceEqual(xs, new Eq());
-            Assert.IsTrue(res.Result);
+            Assert.True(res.Result);
         }
 
-        [TestMethod]
+        [Fact]
         public void SequenceEqual10()
         {
             var xs = new[] { 1, 2, 3 }.ToAsyncEnumerable();
             var ys = new[] { 1, 3, 2 }.ToAsyncEnumerable();
             var res = xs.SequenceEqual(ys, new Eq());
-            Assert.IsFalse(res.Result);
+            Assert.False(res.Result);
         }
 
-        [TestMethod]
+        [Fact]
         public void SequenceEqual11()
         {
             var xs = new[] { 1, 2, 3, 4 }.ToAsyncEnumerable();
             var ys = new[] { 1, 2, 3 }.ToAsyncEnumerable();
             var res = xs.SequenceEqual(ys, new Eq());
-            Assert.IsFalse(res.Result);
+            Assert.False(res.Result);
         }
 
-        [TestMethod]
+        [Fact]
         public void SequenceEqual12()
         {
             var xs = new[] { 1, 2, 3 }.ToAsyncEnumerable();
             var ys = new[] { 1, 2, 3, 4 }.ToAsyncEnumerable();
             var res = xs.SequenceEqual(ys, new Eq());
-            Assert.IsFalse(res.Result);
+            Assert.False(res.Result);
         }
 
-        [TestMethod]
+        [Fact]
         public void SequenceEqual13()
         {
             var ex = new Exception("Bang!");
@@ -458,7 +460,7 @@ namespace Tests
             AssertThrows<Exception>(() => res.Wait(), ex_ => ((AggregateException)ex_).Flatten().InnerExceptions.Single() == ex);
         }
 
-        [TestMethod]
+        [Fact]
         public void SequenceEqual14()
         {
             var ex = new Exception("Bang!");
@@ -469,16 +471,16 @@ namespace Tests
             AssertThrows<Exception>(() => res.Wait(), ex_ => ((AggregateException)ex_).Flatten().InnerExceptions.Single() == ex);
         }
 
-        [TestMethod]
+        [Fact]
         public void SequenceEqual15()
         {
             var xs = new[] { 1, 2, -3, 4 }.ToAsyncEnumerable();
             var ys = new[] { 1, -2, 3, 4 }.ToAsyncEnumerable();
             var res = xs.SequenceEqual(ys, new Eq());
-            Assert.IsTrue(res.Result);
+            Assert.True(res.Result);
         }
 
-        [TestMethod]
+        [Fact]
         public void SequenceEqual16()
         {
             var xs = new[] { 1, 2, -3, 4 }.ToAsyncEnumerable();
@@ -500,7 +502,7 @@ namespace Tests
             }
         }
         
-        [TestMethod]
+        [Fact]
         public void GroupJoin_Null()
         {
             AssertThrows<ArgumentNullException>(() => AsyncEnumerable.GroupJoin<int, int, int, int>(null, AsyncEnumerable.Return(42), x => x, x => x, (x, y) => x));
@@ -517,7 +519,7 @@ namespace Tests
             AssertThrows<ArgumentNullException>(() => AsyncEnumerable.GroupJoin<int, int, int, int>(AsyncEnumerable.Return(42), AsyncEnumerable.Return(42), x => x, x => x, (x, y) => x, default(IEqualityComparer<int>)));
         }
 
-        [TestMethod]
+        [Fact]
         public void GroupJoin1()
         {
             var xs = new[] { 0, 1, 2 }.ToAsyncEnumerable();
@@ -532,7 +534,7 @@ namespace Tests
             NoNext(e);
         }
 
-        [TestMethod]
+        [Fact]
         public void GroupJoin2()
         {
             var xs = new[] { 0, 1, 2 }.ToAsyncEnumerable();
@@ -547,7 +549,7 @@ namespace Tests
             NoNext(e);
         }
 
-        [TestMethod]
+        [Fact]
         public void GroupJoin3()
         {
             var ex = new Exception("Bang!");
@@ -560,7 +562,7 @@ namespace Tests
             AssertThrows<Exception>(() => e.MoveNext().Wait(), ex_ => ((AggregateException)ex_).Flatten().InnerExceptions.Single() == ex);
         }
 
-        [TestMethod]
+        [Fact]
         public void GroupJoin4()
         {
             var ex = new Exception("Bang!");
@@ -573,7 +575,7 @@ namespace Tests
             AssertThrows<Exception>(() => e.MoveNext().Wait(), ex_ => ((AggregateException)ex_).Flatten().InnerExceptions.Single() == ex);
         }
 
-        [TestMethod]
+        [Fact]
         public void GroupJoin5()
         {
             var ex = new Exception("Bang!");
@@ -586,7 +588,7 @@ namespace Tests
             AssertThrows<Exception>(() => e.MoveNext().Wait(), ex_ => ((AggregateException)ex_).Flatten().InnerExceptions.Single() == ex);
         }
 
-        [TestMethod]
+        [Fact]
         public void GroupJoin6()
         {
             var ex = new Exception("Bang!");
@@ -599,7 +601,7 @@ namespace Tests
             AssertThrows<Exception>(() => e.MoveNext().Wait(), ex_ => ((AggregateException)ex_).Flatten().InnerExceptions.Single() == ex);
         }
 
-        [TestMethod]
+        [Fact]
         public void GroupJoin7()
         {
             var ex = new Exception("Bang!");
@@ -617,7 +619,7 @@ namespace Tests
             AssertThrows<Exception>(() => e.MoveNext().Wait(), ex_ => ((AggregateException)ex_).Flatten().InnerExceptions.Single() == ex);
         }
 
-        [TestMethod]
+        [Fact]
         public void Join_Null()
         {
             AssertThrows<ArgumentNullException>(() => AsyncEnumerable.Join<int, int, int, int>(null, AsyncEnumerable.Return(42), x => x, x => x, (x, y) => x));
@@ -634,7 +636,7 @@ namespace Tests
             AssertThrows<ArgumentNullException>(() => AsyncEnumerable.Join<int, int, int, int>(AsyncEnumerable.Return(42), AsyncEnumerable.Return(42), x => x, x => x, (x, y) => x, default(IEqualityComparer<int>)));
         }
 
-        [TestMethod]
+        [Fact]
         public void Join1()
         {
             var xs = new[] { 0, 1, 2 }.ToAsyncEnumerable();
@@ -649,7 +651,7 @@ namespace Tests
             NoNext(e);
         }
 
-        [TestMethod]
+        [Fact]
         public void Join2()
         {
             var xs = new[] { 3, 6, 4 }.ToAsyncEnumerable();
@@ -664,7 +666,7 @@ namespace Tests
             NoNext(e);
         }
 
-        [TestMethod]
+        [Fact]
         public void Join3()
         {
             var xs = new[] { 0, 1, 2 }.ToAsyncEnumerable();
@@ -678,7 +680,7 @@ namespace Tests
             NoNext(e);
         }
 
-        [TestMethod]
+        [Fact]
         public void Join4()
         {
             var xs = new[] { 3, 6 }.ToAsyncEnumerable();
@@ -692,7 +694,7 @@ namespace Tests
             NoNext(e);
         }
 
-        [TestMethod]
+        [Fact]
         public void Join5()
         {
             var ex = new Exception("Bang!");
@@ -705,7 +707,7 @@ namespace Tests
             AssertThrows<Exception>(() => e.MoveNext().Wait(), ex_ => ((AggregateException)ex_).Flatten().InnerExceptions.Single() == ex);
         }
 
-        [TestMethod]
+        [Fact]
         public void Join6()
         {
             var ex = new Exception("Bang!");
@@ -718,7 +720,7 @@ namespace Tests
             AssertThrows<Exception>(() => e.MoveNext().Wait(), ex_ => ((AggregateException)ex_).Flatten().InnerExceptions.Single() == ex);
         }
 
-        [TestMethod]
+        [Fact]
         public void Join7()
         {
             var ex = new Exception("Bang!");
@@ -731,7 +733,7 @@ namespace Tests
             AssertThrows<Exception>(() => e.MoveNext().Wait(), ex_ => ((AggregateException)ex_).Flatten().InnerExceptions.Single() == ex);
         }
 
-        [TestMethod]
+        [Fact]
         public void Join8()
         {
             var ex = new Exception("Bang!");
@@ -744,7 +746,7 @@ namespace Tests
             AssertThrows<Exception>(() => e.MoveNext().Wait(), ex_ => ((AggregateException)ex_).Flatten().InnerExceptions.Single() == ex);
         }
 
-        [TestMethod]
+        [Fact]
         public void Join9()
         {
             var ex = new Exception("Bang!");
@@ -757,14 +759,14 @@ namespace Tests
             AssertThrows<Exception>(() => e.MoveNext().Wait(), ex_ => ((AggregateException)ex_).Flatten().InnerExceptions.Single() == ex);
         }
 
-        [TestMethod]
+        [Fact]
         public void SelectManyMultiple_Null()
         {
             AssertThrows<ArgumentNullException>(() => AsyncEnumerable.SelectMany<int, int>(default(IAsyncEnumerable<int>), AsyncEnumerable.Return(42)));
             AssertThrows<ArgumentNullException>(() => AsyncEnumerable.SelectMany<int, int>(AsyncEnumerable.Return(42), default(IAsyncEnumerable<int>)));
         }
 
-        [TestMethod]
+        [Fact]
         public void SelectManyMultiple1()
         {
             var xs = new[] { 0, 1, 2 }.ToAsyncEnumerable();

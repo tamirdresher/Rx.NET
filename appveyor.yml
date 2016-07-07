@@ -1,0 +1,31 @@
+image: Visual Studio 2015
+init:
+  - cmd: set
+
+branches:
+  only:
+    - master
+    - /dev.*/
+
+skip_commits:
+  files:
+    - '**/*.md'
+
+nuget:
+  disable_publish_on_pr: true
+
+build_script:
+- ps: .\build.ps1
+
+test: off
+artifacts:
+- path: .\artifacts\*.nupkg
+  
+deploy:
+  provider: NuGet
+  server: https://dotnet.myget.org/F/rx/api/v2/package
+  on:
+    branch: master  
+  api_key:
+    secure: 5qZfZf9XVtN+h/UHwocrEBZjaZCajJg9fZbLDPigoew1NG7PzWQxMv1kLQJW6eWE
+  symbol_server: https://dotnet.myget.org/F/rx/symbols/api/v2/package

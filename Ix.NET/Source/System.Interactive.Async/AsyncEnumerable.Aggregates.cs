@@ -1,4 +1,6 @@
-﻿// Copyright (c) Microsoft Open Technologies, Inc. All rights reserved. See License.txt in the project root for license information.
+﻿// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the Apache 2.0 License.
+// See the LICENSE file in the project root for more information. 
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -113,7 +115,7 @@ namespace System.Linq
                     else
                     {
                         if (first)
-                            tcs.TrySetException(new InvalidOperationException());
+                            tcs.TrySetException(new InvalidOperationException(Strings.NO_ELEMENTS));
                         else
                             tcs.TrySetResult(acc);
                     }
@@ -288,7 +290,7 @@ namespace System.Linq
                     if (res)
                         tcs.TrySetResult(e.Current);
                     else
-                        tcs.TrySetException(new InvalidOperationException());
+                        tcs.TrySetException(new InvalidOperationException(Strings.NO_ELEMENTS));
                 });
             });
 
@@ -363,7 +365,7 @@ namespace System.Linq
                     else
                     {
                         if (!hasLast)
-                            tcs.TrySetException(new InvalidOperationException());
+                            tcs.TrySetException(new InvalidOperationException(Strings.NO_ELEMENTS));
                         else
                             tcs.TrySetResult(last);
                     }
@@ -453,14 +455,14 @@ namespace System.Linq
                             t1.Handle(tcs, res1 =>
                             {
                                 if (res1)
-                                    tcs.TrySetException(new InvalidOperationException());
+                                    tcs.TrySetException(new InvalidOperationException(Strings.MORE_THAN_ONE_ELEMENT));
                                 else
                                     tcs.TrySetResult(result);
                             });
                         });
                     }
                     else
-                        tcs.TrySetException(new InvalidOperationException());
+                        tcs.TrySetException(new InvalidOperationException(Strings.NO_ELEMENTS));
                 });
             });
 
@@ -498,7 +500,7 @@ namespace System.Linq
                             t1.Handle(tcs, res1 =>
                             {
                                 if (res1)
-                                    tcs.TrySetException(new InvalidOperationException());
+                                    tcs.TrySetException(new InvalidOperationException(Strings.MORE_THAN_ONE_ELEMENT));
                                 else
                                     tcs.TrySetResult(result);
                             });
@@ -552,7 +554,7 @@ namespace System.Linq
                     }
                     else
                     {
-                        tcs.TrySetException(new ArgumentOutOfRangeException());
+                        tcs.TrySetException(new ArgumentOutOfRangeException("index"));
                     }
                 });
             });
@@ -787,7 +789,7 @@ namespace System.Linq
                     else
                     {
                         if (count == 0)
-                            tcs.TrySetException(new InvalidOperationException());
+                            tcs.TrySetException(new InvalidOperationException(Strings.NO_ELEMENTS));
                         else
                             tcs.TrySetResult(sum / count);
                     }
@@ -866,7 +868,7 @@ namespace System.Linq
                     else
                     {
                         if (count == 0)
-                            tcs.TrySetException(new InvalidOperationException());
+                            tcs.TrySetException(new InvalidOperationException(Strings.NO_ELEMENTS));
                         else
                             tcs.TrySetResult(sum / count);
                     }
@@ -945,7 +947,7 @@ namespace System.Linq
                     else
                     {
                         if (count == 0)
-                            tcs.TrySetException(new InvalidOperationException());
+                            tcs.TrySetException(new InvalidOperationException(Strings.NO_ELEMENTS));
                         else
                             tcs.TrySetResult(sum / count);
                     }
@@ -1024,7 +1026,7 @@ namespace System.Linq
                     else
                     {
                         if (count == 0)
-                            tcs.TrySetException(new InvalidOperationException());
+                            tcs.TrySetException(new InvalidOperationException(Strings.NO_ELEMENTS));
                         else
                             tcs.TrySetResult(sum / count);
                     }
@@ -1103,7 +1105,7 @@ namespace System.Linq
                     else
                     {
                         if (count == 0)
-                            tcs.TrySetException(new InvalidOperationException());
+                            tcs.TrySetException(new InvalidOperationException(Strings.NO_ELEMENTS));
                         else
                             tcs.TrySetResult(sum / count);
                     }
@@ -1951,7 +1953,7 @@ namespace System.Linq
                     {
                         if (!res)
                         {
-                            tcs.TrySetException(new InvalidOperationException("Source sequence doesn't contain any elements."));
+                            tcs.TrySetException(new InvalidOperationException(Strings.NO_ELEMENTS));
                             return;
                         }
 
